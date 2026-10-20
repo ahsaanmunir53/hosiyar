@@ -1,6 +1,12 @@
-# Render Blueprint for the backend (free plan, no credit card).
-# You can also create the Web Service by hand (see docs/SETUP.md); the settings are the same.
+# Render Blueprint: the API (free web service) and the website (free static site), no credit card.
+# Render dashboard -> New -> Blueprint -> pick this repo. It asks for every "sync: false" value once.
+# You can also create both by hand (see docs/SETUP.md); the settings are the same.
+#
+# Service URLs are https://<name>.onrender.com when the name is free. If Render adds a suffix
+# (for example hoshiyar-api-x7k2), put the real URLs into VITE_API_URL, ALLOWED_ORIGINS and
+# PUBLIC_APP_URL afterwards and redeploy both services.
 services:
+  # ------------------------------------------------------------------ API (sleeps after 15 min idle)
   - type: web
     name: hoshiyar-api
     runtime: python
@@ -24,14 +30,19 @@ services:
         sync: false
       - key: TELEGRAM_BOT_TOKEN
         sync: false
+      # Must match TELEGRAM_WEBHOOK_SECRET in your local .env (set_telegram_webhook.py reads it there),
+      # and Telegram allows only letters, digits, _ and -. Make one with:
+      #   python -c "import secrets; print(secrets.token_urlsafe(32))"
       - key: TELEGRAM_WEBHOOK_SECRET
-        generateValue: true
+        sync: false
       - key: TELEGRAM_ALERT_CHAT_ID
         sync: false
+      # Keep this value fixed: changing it breaks matching of earlier phone/account fingerprints.
       - key: FINGERPRINT_SECRET
         generateValue: true
       - key: AUTH_SECRET
         generateValue: true
+      # Copy this value into the GitHub secret CRON_SECRET (Settings -> Secrets and variables -> Actions).
       - key: CRON_SECRET
         generateValue: true
       - key: INTEGRATION_KEY
@@ -42,11 +53,54 @@ services:
         sync: false
       - key: TURNSTILE_SECRET
         sync: false
+      # The website's URL, e.g. https://hoshiyar-web.onrender.com (comma-separate several, e.g. a Vercel URL too).
       - key: ALLOWED_ORIGINS
         sync: false
+      # The website's URL, used in Telegram messages.
       - key: PUBLIC_APP_URL
         sync: false
       - key: TRUSTED_PROXY_HOPS
         value: "3"
       - key: SEED_DEMO_DATA
         value: "true"
+
+  # ------------------------------------------------------------------ Website (static, does not sleep)
+  - type: web
+    name: hoshiyar-web
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm ci --include=dev && npm run build
+    staticPublishPath: dist
+    # Files that exist (assets, sw.js, icons) are served as they are; every other path is the app.
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    headers:
+      - path: /sw.js
+        name: Cache-Control
+        value: no-cache
+      - path: /index.html
+        name: Cache-Control
+        value: no-cache
+      - path: /manifest.webmanifest
+        name: Content-Type
+        value: application/manifest+json
+      - path: /*
+        name: Referrer-Policy
+        value: no-referrer
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: Permissions-Policy
+        value: camera=(self), microphone=(self), geolocation=()
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      # The API's URL, e.g. https://hoshiyar-api.onrender.com. Read at build time, so redeploy after changing it.
+      - key: VITE_API_URL
+        sync: false
+      # Optional: Cloudflare Turnstile site key (set TURNSTILE_SECRET on the API too).
+      - key: VITE_TURNSTILE_SITE_KEY
+        sync: false
