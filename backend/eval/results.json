@@ -1,0 +1,517 @@
+{
+  "generated_at": "2026-10-20T11:26:10+00:00",
+  "rules_version": "2026.10.2",
+  "network_checks": false,
+  "test": {
+    "messages": 60,
+    "scam": 36,
+    "legit": 24,
+    "runs": [
+      {
+        "name": "rules only",
+        "model": "none",
+        "messages": 60,
+        "strict": {
+          "tp": 28,
+          "fn": 8,
+          "fp": 0,
+          "tn": 24,
+          "precision": 1.0,
+          "recall": 0.7778,
+          "f1": 0.875,
+          "fpr": 0.0
+        },
+        "flagged": {
+          "tp": 35,
+          "fn": 1,
+          "fp": 0,
+          "tn": 24,
+          "precision": 1.0,
+          "recall": 0.9722,
+          "f1": 0.9859,
+          "fpr": 0.0
+        },
+        "ai_failed": 0,
+        "missed": [
+          "t04",
+          "t13",
+          "t19",
+          "t20",
+          "t31",
+          "t32",
+          "t33",
+          "t36"
+        ],
+        "false_alarms": [],
+        "by_category": {
+          "account_takeover": {
+            "n": 3,
+            "caught": 2,
+            "flagged": 3
+          },
+          "bank_wallet": {
+            "n": 7,
+            "caught": 7,
+            "flagged": 7
+          },
+          "delivery": {
+            "n": 2,
+            "caught": 2,
+            "flagged": 2
+          },
+          "family_emergency": {
+            "n": 4,
+            "caught": 3,
+            "flagged": 4
+          },
+          "government_benefit": {
+            "n": 5,
+            "caught": 4,
+            "flagged": 5
+          },
+          "investment": {
+            "n": 3,
+            "caught": 3,
+            "flagged": 3
+          },
+          "job_task": {
+            "n": 4,
+            "caught": 2,
+            "flagged": 4
+          },
+          "loan": {
+            "n": 2,
+            "caught": 2,
+            "flagged": 2
+          },
+          "phishing_link": {
+            "n": 2,
+            "caught": 0,
+            "flagged": 1
+          },
+          "prize": {
+            "n": 3,
+            "caught": 3,
+            "flagged": 3
+          },
+          "utility": {
+            "n": 1,
+            "caught": 0,
+            "flagged": 1
+          }
+        },
+        "by_language": {
+          "en": {
+            "n": 16,
+            "caught": 12,
+            "flagged": 15
+          },
+          "roman": {
+            "n": 14,
+            "caught": 12,
+            "flagged": 14
+          },
+          "ur": {
+            "n": 6,
+            "caught": 4,
+            "flagged": 6
+          }
+        }
+      },
+      {
+        "name": "rules + pattern memory",
+        "model": "none",
+        "messages": 60,
+        "strict": {
+          "tp": 28,
+          "fn": 8,
+          "fp": 0,
+          "tn": 24,
+          "precision": 1.0,
+          "recall": 0.7778,
+          "f1": 0.875,
+          "fpr": 0.0
+        },
+        "flagged": {
+          "tp": 35,
+          "fn": 1,
+          "fp": 0,
+          "tn": 24,
+          "precision": 1.0,
+          "recall": 0.9722,
+          "f1": 0.9859,
+          "fpr": 0.0
+        },
+        "ai_failed": 0,
+        "missed": [
+          "t04",
+          "t13",
+          "t19",
+          "t20",
+          "t31",
+          "t32",
+          "t33",
+          "t36"
+        ],
+        "false_alarms": [],
+        "by_category": {
+          "account_takeover": {
+            "n": 3,
+            "caught": 2,
+            "flagged": 3
+          },
+          "bank_wallet": {
+            "n": 7,
+            "caught": 7,
+            "flagged": 7
+          },
+          "delivery": {
+            "n": 2,
+            "caught": 2,
+            "flagged": 2
+          },
+          "family_emergency": {
+            "n": 4,
+            "caught": 3,
+            "flagged": 4
+          },
+          "government_benefit": {
+            "n": 5,
+            "caught": 4,
+            "flagged": 5
+          },
+          "investment": {
+            "n": 3,
+            "caught": 3,
+            "flagged": 3
+          },
+          "job_task": {
+            "n": 4,
+            "caught": 2,
+            "flagged": 4
+          },
+          "loan": {
+            "n": 2,
+            "caught": 2,
+            "flagged": 2
+          },
+          "phishing_link": {
+            "n": 2,
+            "caught": 0,
+            "flagged": 1
+          },
+          "prize": {
+            "n": 3,
+            "caught": 3,
+            "flagged": 3
+          },
+          "utility": {
+            "n": 1,
+            "caught": 0,
+            "flagged": 1
+          }
+        },
+        "by_language": {
+          "en": {
+            "n": 16,
+            "caught": 12,
+            "flagged": 15
+          },
+          "roman": {
+            "n": 14,
+            "caught": 12,
+            "flagged": 14
+          },
+          "ur": {
+            "n": 6,
+            "caught": 4,
+            "flagged": 6
+          }
+        }
+      }
+    ]
+  },
+  "dev": {
+    "messages": 100,
+    "scam": 60,
+    "legit": 40,
+    "runs": [
+      {
+        "name": "rules only",
+        "model": "none",
+        "messages": 100,
+        "strict": {
+          "tp": 58,
+          "fn": 2,
+          "fp": 0,
+          "tn": 40,
+          "precision": 1.0,
+          "recall": 0.9667,
+          "f1": 0.9831,
+          "fpr": 0.0
+        },
+        "flagged": {
+          "tp": 60,
+          "fn": 0,
+          "fp": 0,
+          "tn": 40,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "fpr": 0.0
+        },
+        "ai_failed": 0,
+        "missed": [
+          "s44",
+          "s48"
+        ],
+        "false_alarms": [],
+        "by_category": {
+          "account_takeover": {
+            "n": 6,
+            "caught": 6,
+            "flagged": 6
+          },
+          "bank_wallet": {
+            "n": 13,
+            "caught": 13,
+            "flagged": 13
+          },
+          "delivery": {
+            "n": 3,
+            "caught": 2,
+            "flagged": 3
+          },
+          "family_emergency": {
+            "n": 5,
+            "caught": 5,
+            "flagged": 5
+          },
+          "government_benefit": {
+            "n": 10,
+            "caught": 10,
+            "flagged": 10
+          },
+          "investment": {
+            "n": 5,
+            "caught": 5,
+            "flagged": 5
+          },
+          "job_task": {
+            "n": 6,
+            "caught": 6,
+            "flagged": 6
+          },
+          "loan": {
+            "n": 2,
+            "caught": 2,
+            "flagged": 2
+          },
+          "phishing_link": {
+            "n": 2,
+            "caught": 2,
+            "flagged": 2
+          },
+          "prize": {
+            "n": 6,
+            "caught": 6,
+            "flagged": 6
+          },
+          "utility": {
+            "n": 2,
+            "caught": 1,
+            "flagged": 2
+          }
+        },
+        "by_language": {
+          "en": {
+            "n": 28,
+            "caught": 28,
+            "flagged": 28
+          },
+          "roman": {
+            "n": 25,
+            "caught": 23,
+            "flagged": 25
+          },
+          "ur": {
+            "n": 7,
+            "caught": 7,
+            "flagged": 7
+          }
+        }
+      },
+      {
+        "name": "rules + pattern memory",
+        "model": "none",
+        "messages": 100,
+        "strict": {
+          "tp": 59,
+          "fn": 1,
+          "fp": 0,
+          "tn": 40,
+          "precision": 1.0,
+          "recall": 0.9833,
+          "f1": 0.9916,
+          "fpr": 0.0
+        },
+        "flagged": {
+          "tp": 60,
+          "fn": 0,
+          "fp": 0,
+          "tn": 40,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "fpr": 0.0
+        },
+        "ai_failed": 0,
+        "missed": [
+          "s44"
+        ],
+        "false_alarms": [],
+        "by_category": {
+          "account_takeover": {
+            "n": 6,
+            "caught": 6,
+            "flagged": 6
+          },
+          "bank_wallet": {
+            "n": 13,
+            "caught": 13,
+            "flagged": 13
+          },
+          "delivery": {
+            "n": 3,
+            "caught": 2,
+            "flagged": 3
+          },
+          "family_emergency": {
+            "n": 5,
+            "caught": 5,
+            "flagged": 5
+          },
+          "government_benefit": {
+            "n": 10,
+            "caught": 10,
+            "flagged": 10
+          },
+          "investment": {
+            "n": 5,
+            "caught": 5,
+            "flagged": 5
+          },
+          "job_task": {
+            "n": 6,
+            "caught": 6,
+            "flagged": 6
+          },
+          "loan": {
+            "n": 2,
+            "caught": 2,
+            "flagged": 2
+          },
+          "phishing_link": {
+            "n": 2,
+            "caught": 2,
+            "flagged": 2
+          },
+          "prize": {
+            "n": 6,
+            "caught": 6,
+            "flagged": 6
+          },
+          "utility": {
+            "n": 2,
+            "caught": 2,
+            "flagged": 2
+          }
+        },
+        "by_language": {
+          "en": {
+            "n": 28,
+            "caught": 28,
+            "flagged": 28
+          },
+          "roman": {
+            "n": 25,
+            "caught": 24,
+            "flagged": 25
+          },
+          "ur": {
+            "n": 7,
+            "caught": 7,
+            "flagged": 7
+          }
+        }
+      }
+    ]
+  },
+  "test_ai": {
+    "messages": 20,
+    "scam": 10,
+    "legit": 10,
+    "runs": [
+      {
+        "name": "full (AI + memory)",
+        "model": "groq/openai/gpt-oss-120b → gemini/gemini-3.5-flash-lite → groq/openai/gpt-oss-20b · local768 embeddings",
+        "read_by": {
+          "openai/gpt-oss-120b": 20
+        },
+        "messages": 20,
+        "strict": {
+          "tp": 10,
+          "fn": 0,
+          "fp": 0,
+          "tn": 10,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "fpr": 0.0
+        },
+        "flagged": {
+          "tp": 10,
+          "fn": 0,
+          "fp": 0,
+          "tn": 10,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "fpr": 0.0
+        },
+        "ai_failed": 0,
+        "missed": [],
+        "false_alarms": [],
+        "by_category": {
+          "bank_wallet": {
+            "n": 6,
+            "caught": 6,
+            "flagged": 6
+          },
+          "government_benefit": {
+            "n": 4,
+            "caught": 4,
+            "flagged": 4
+          }
+        },
+        "by_language": {
+          "en": {
+            "n": 4,
+            "caught": 4,
+            "flagged": 4
+          },
+          "roman": {
+            "n": 4,
+            "caught": 4,
+            "flagged": 4
+          },
+          "ur": {
+            "n": 2,
+            "caught": 2,
+            "flagged": 2
+          }
+        }
+      }
+    ]
+  }
+}

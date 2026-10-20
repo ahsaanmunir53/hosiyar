@@ -1,0 +1,19 @@
+[project]
+name = "hoshiyar-backend"
+version = "0.2.0"
+description = "Hoshiyar: checks suspicious messages for scam signs. AI reads, rules decide."
+requires-python = ">=3.12"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+filterwarnings = ["ignore::DeprecationWarning"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = ["E501", "B008"]  # B008: FastAPI uses File()/Form() defaults by design

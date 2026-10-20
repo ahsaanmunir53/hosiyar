@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Hoshiyar</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header>
+      <img src="icons/icon-32.png" width="22" height="22" alt="" />
+      <strong>Hoshiyar</strong>
+      <span class="ur" lang="ur">ہوشیار</span>
+      <a id="settings" href="options.html" target="_blank">Settings</a>
+    </header>
+    <section id="result" hidden></section>
+    <form id="form">
+      <label for="text">Paste a message or link to check</label>
+      <textarea id="text" rows="4" maxlength="4000" dir="auto" placeholder="Paste the SMS, WhatsApp message or link…"></textarea>
+      <button type="submit">Check</button>
+    </form>
+    <p class="hint">Or select text on any page, right-click and choose "Check with Hoshiyar". Only what you choose to check is sent to your Hoshiyar server.</p>
+    <script src="settings.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>

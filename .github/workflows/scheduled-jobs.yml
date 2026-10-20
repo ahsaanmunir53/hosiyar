@@ -1,0 +1,31 @@
+# Weekly scam warning (Mondays 04:00 UTC = 09:00 in Pakistan) and a daily data-retention purge.
+# Set the repository variable BACKEND_URL and the secret CRON_SECRET (same value as on Render).
+name: Scheduled jobs
+
+on:
+  schedule:
+    - cron: "0 4 * * 1"
+    - cron: "30 2 * * *"
+  workflow_dispatch:
+    inputs:
+      job:
+        description: "weekly or purge"
+        default: weekly
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    if: ${{ vars.BACKEND_URL != '' }}
+    steps:
+      - name: Pick the job
+        id: pick
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then echo "job=${{ inputs.job }}" >> "$GITHUB_OUTPUT";
+          elif [ "${{ github.event.schedule }}" = "0 4 * * 1" ]; then echo "job=weekly" >> "$GITHUB_OUTPUT";
+          else echo "job=purge" >> "$GITHUB_OUTPUT"; fi
+      - name: Wake the backend (free plan sleeps)
+        run: curl -fsS --max-time 90 "${{ vars.BACKEND_URL }}/api/health" > /dev/null || true
+      - name: Call the job
+        run: |
+          curl -fsS --max-time 90 -X POST -H "X-Cron-Secret: ${{ secrets.CRON_SECRET }}" \
+            "${{ vars.BACKEND_URL }}/api/cron/${{ steps.pick.outputs.job }}"

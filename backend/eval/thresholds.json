@@ -1,0 +1,6 @@
+{
+  "_note": "CI fails if a change makes the checker worse than this. Raise the bar as the rules improve; never lower it to make a change pass.",
+  "test": {"run": "rules + pattern memory", "min_strict_precision": 0.95, "min_strict_recall": 0.75, "min_flagged_recall": 0.95, "max_false_alarms": 0},
+  "dev": {"run": "rules + pattern memory", "min_strict_precision": 0.98, "min_strict_recall": 0.95, "min_flagged_recall": 0.98, "max_false_alarms": 0},
+  "redteam": {"run": "rules + pattern memory", "min_pass_rate": 1.0}
+}

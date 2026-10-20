@@ -1,0 +1,34 @@
+:root { color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin: 0; width: 360px; padding: 14px; background: #0c2420; color: #e7eee6;
+  font: 14px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+header strong { font-family: Georgia, serif; font-size: 17px; font-weight: 500; }
+.ur { color: #e9c86a; font-size: 13px; }
+header a { margin-left: auto; color: #aec2b8; font-size: 12px; }
+a { color: #9fe3c8; }
+label { display: block; font-weight: 600; font-size: 13px; margin-bottom: 6px; }
+textarea { width: 100%; resize: vertical; background: #081b18; color: #e7eee6; border: 1px solid rgba(231,238,230,.14);
+  border-radius: 10px; padding: 9px 11px; font: inherit; }
+textarea:focus { outline: none; border-color: rgba(159,227,200,.6); }
+button { margin-top: 8px; width: 100%; border: 0; border-radius: 999px; padding: 9px; background: #e7eee6; color: #0c2420;
+  font: inherit; font-weight: 600; cursor: pointer; }
+button:disabled { opacity: .6; cursor: progress; }
+.hint { color: #84998f; font-size: 12px; margin: 10px 0 0; }
+#result { --v: #9fe3c8; border-radius: 14px; padding: 12px 13px; margin-bottom: 12px; background: #12302a;
+  box-shadow: inset 0 0 0 1px rgba(231,238,230,.12); border-left: 4px solid var(--v); }
+#result.likely_scam { --v: #f2668c; }
+#result.suspicious { --v: #e7b54c; }
+#result.no_red_flags { --v: #5ccfa5; }
+.verdict { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; }
+.verdict b { white-space: nowrap; }
+.verdict b { color: var(--v); font-family: Georgia, serif; font-size: 20px; font-weight: 500; }
+.verdict span { color: #aec2b8; font-size: 12px; }
+.explain { margin: 6px 0 8px; }
+ul { margin: 0; padding-left: 18px; color: #aec2b8; font-size: 13px; }
+li + li { margin-top: 3px; }
+.steps { margin-top: 8px; }
+.steps li:first-child { color: #e7eee6; }
+.muted { color: #84998f; font-size: 12px; }
+.error { color: #ffb3c4; }
+.more { display: inline-block; margin-top: 8px; font-size: 12px; }

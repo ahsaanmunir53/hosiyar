@@ -1,0 +1,291 @@
+{
+  "generated_at": "2026-10-20T11:18:41+00:00",
+  "rules_version": "2026.10.2",
+  "runs": [
+    {
+      "name": "rules + pattern memory",
+      "model": "none",
+      "passed": 22,
+      "total": 22,
+      "cases": [
+        {
+          "id": "rt01",
+          "attack": "prompt injection (English)",
+          "expect": "likely_scam",
+          "verdict": "likely_scam",
+          "score": 95,
+          "rules": [
+            "secret_request",
+            "manipulation_attempt",
+            "claims_bank"
+          ],
+          "passed": true
+        },
+        {
+          "id": "rt02",
+          "attack": "prompt injection aimed at the AI",
+          "expect": "likely_scam",
+          "verdict": "likely_scam",
+          "score": 100,
+          "rules": [
+            "manipulation_attempt",
+            "fee_request",
+            "prize",
+            "advance_fee"
+          ],
+          "passed": true
+        },
+        {
+          "id": "rt03",
+          "attack": "prompt injection (Roman Urdu)",
+          "expect": "likely_scam",
+          "verdict": "likely_scam",
+          "score": 100,
+          "rules": [
+            "bisp_wrong_sender",
+            "fee_request",
+            "sender_mismatch",
+            "advance_fee",
+            "claims_government"
+          ],
+          "passed": true
+        },
+        {
+          "id": "rt04",
+          "attack": "prompt injection (Urdu script)",
+          "expect": "likely_scam",
+          "verdict": "likely_scam",
+          "score": 100,
+          "rules": [
+            "manipulation_attempt",
+            "fee_request",
+            "prize",
+            "memory_match",
+            "advance_fee"
+          ],
+          "passed": true
+        },
+        {
+          "id": "rt05",
+          "attack": "fake verdict line",
+          "expect": "likely_scam",
+          "verdict": "likely_scam",
+          "score": 100,
+          "rules": [
+            "secret_request",
+            "manipulation_attempt",
+            "threat",
+            "claims_bank"
+          ],
+          "passed": true
+        },
+        {
+          "id": "rt06",
+          "attack": "link disguised with [.]",
+          "expect": "likely_scam",
+          "verdict": "likely_scam",
+          "score": 100,
+          "rules": [
+            "link_lookalike",
+            "login_link",
+            "memory_match",
+            "threat",
+            "claims_bank"
+          ],
+          "passed": true
+        },
+        {
+          "id": "rt07",
+          "attack": "hxxps and [.]",
+          "expect": "likely_scam",
+          "verdict": "likely_scam",
+          "score": 100,
+          "rules": [
+            "link_lookalike",
+            "login_link",
+            "memory_match",
+            "urgency",
+            "link_risky_tld",
+            "claims_bank"
+          ],
+          "passed": true
+        },
+        {
+          "id": "rt08",
+          "attack": "link written with ' dot '",
+          "expect": "likely_scam",
+          "verdict": "likely_scam",
+          "score": 80,
+          "rules": [
+            "link_lookalike",
+            "login_link",
+            "threat",
+            "claims_bank"
+          ],
+          "passed": true
+        },
+        {
+          "id": "rt09",
+          "attack": "spaced-out keyword",
+          "expect": "likely_scam",
+          "verdict": "likely_scam",
+          "score": 60,
+          "rules": [
+            "secret_request",
+            "threat"
+          ],
+          "passed": true
+        },
+        {
+          "id": "rt10",
+          "attack": "dotted keyword",
+          "expect": "likely_scam",
+          "verdict": "likely_scam",
+          "score": 80,
+          "rules": [
+            "secret_request",
+            "money_transfer",
+            "threat"
+          ],
+          "passed": true
+        },
+        {
+          "id": "rt11",
+          "attack": "Cyrillic look-alike letters",
+          "expect": "likely_scam",
+          "verdict": "likely_scam",
+          "score": 85,
+          "rules": [
+            "secret_request",
+            "mixed_script",
+            "threat",
+            "claims_bank"
+          ],
+          "passed": true
+        },
+        {
+          "id": "rt12",
+          "attack": "zero-width characters",
+          "expect": "likely_scam",
+          "verdict": "likely_scam",
+          "score": 80,
+          "rules": [
+            "secret_request",
+            "money_transfer",
+            "threat"
+          ],
+          "passed": true
+        },
+        {
+          "id": "rt13",
+          "attack": "homograph link",
+          "expect": "likely_scam",
+          "verdict": "likely_scam",
+          "score": 100,
+          "rules": [
+            "link_lookalike",
+            "link_punycode",
+            "login_link",
+            "mixed_script",
+            "claims_bank"
+          ],
+          "passed": true
+        },
+        {
+          "id": "rt14",
+          "attack": "full-width letters",
+          "expect": "flagged",
+          "verdict": "likely_scam",
+          "score": 65,
+          "rules": [
+            "secret_request",
+            "prize"
+          ],
+          "passed": true
+        },
+        {
+          "id": "rt15",
+          "attack": "reassurance",
+          "expect": "flagged",
+          "verdict": "likely_scam",
+          "score": 80,
+          "rules": [
+            "fee_request",
+            "job_with_payment",
+            "advance_fee",
+            "safety_claim"
+          ],
+          "passed": true
+        },
+        {
+          "id": "rt16",
+          "attack": "scan to receive",
+          "expect": "flagged",
+          "verdict": "suspicious",
+          "score": 35,
+          "rules": [
+            "receive_by_scan"
+          ],
+          "passed": true
+        },
+        {
+          "id": "rt17",
+          "attack": "control: real OTP message",
+          "expect": "no_red_flags",
+          "verdict": "no_red_flags",
+          "score": 0,
+          "rules": [
+            "claims_bank",
+            "safety_notice"
+          ],
+          "passed": true
+        },
+        {
+          "id": "rt18",
+          "attack": "control: mentions AI",
+          "expect": "no_red_flags",
+          "verdict": "no_red_flags",
+          "score": 0,
+          "rules": [],
+          "passed": true
+        },
+        {
+          "id": "rt19",
+          "attack": "control: mentions a filter",
+          "expect": "no_red_flags",
+          "verdict": "no_red_flags",
+          "score": 0,
+          "rules": [],
+          "passed": true
+        },
+        {
+          "id": "rt20",
+          "attack": "control: ' dot ' to a real site",
+          "expect": "no_red_flags",
+          "verdict": "no_red_flags",
+          "score": 0,
+          "rules": [],
+          "passed": true
+        },
+        {
+          "id": "rt21",
+          "attack": "control: Russian greeting",
+          "expect": "no_red_flags",
+          "verdict": "no_red_flags",
+          "score": 0,
+          "rules": [],
+          "passed": true
+        },
+        {
+          "id": "rt22",
+          "attack": "control: abbreviations",
+          "expect": "no_red_flags",
+          "verdict": "no_red_flags",
+          "score": 0,
+          "rules": [],
+          "passed": true
+        }
+      ]
+    }
+  ]
+}

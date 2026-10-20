@@ -1,0 +1,47 @@
+# Official places to report scams in Pakistan.
+# Verified from public sources on 2026-10-19. Re-check before relying on them;
+# numbers and portals change. Each entry lists where it was confirmed.
+
+nccia:
+  name: NCCIA (National Cyber Crime Investigation Agency)
+  url: https://www.nccia.gov.pk
+  for: Online fraud and cybercrime complaints
+  source: https://commoner-law.com/pakistan/scams-fraud-recovery/reporting-cyber-crime-to-nccia
+
+pta:
+  name: PTA complaint portal
+  url: https://complaint.pta.gov.pk
+  phone: "0800-55055"
+  for: Scam calls and SMS, blocking fraudulent SIMs
+  source: https://commoner-law.com/pakistan/scams-fraud-recovery/reporting-cyber-crime-to-nccia
+
+fia_helpline:
+  name: FIA helpline
+  phone: "1799"
+  for: Cybercrime cases (listed in PTA's February 2026 advisory)
+  source: https://propakistani.pk/2026/02/06/pta-warns-public-against-rising-scam-calls-and-online-fraud/
+
+sbp:
+  name: State Bank of Pakistan helpline
+  phone: "111-727-273"
+  for: Financial or mobile-banking fraud
+  source: https://propakistani.pk/2026/02/06/pta-warns-public-against-rising-scam-calls-and-online-fraud/
+
+bisp:
+  name: BISP helpline
+  phone: "0800-26477"
+  sms_shortcode: "8171"
+  for: BISP stipend questions; BISP says official SMS come only from 8171
+  source: https://www.geo.tv/latest/545927-bisp-cautions-beneficiaries-against-fake-messages
+
+psca_echallan:
+  name: PSCA e-challan portal
+  url: https://echallan.psca.gop.pk
+  for: Checking Punjab traffic e-challans by vehicle number. PSCA says genuine e-challans come from an official short code, not a personal number.
+  source: https://www.pakwheels.com/blog/how-to-check-and-pay-your-e-challan-in-pakistan-a-guide/ and https://propakistani.pk/2026/06/29/punjab-warns-citizens-against-fake-e-challans/
+
+beoe:
+  name: Bureau of Emigration & Overseas Employment (BEOE)
+  url: https://beoe.gov.pk
+  for: Overseas job offers. Private-sector job ads must come from a licensed Overseas Employment Promoter and carry a permission or tracking number you can verify. Trade test centres are not recruiters. Complain to the FIA about anyone demanding money for a visa or job.
+  source: https://propakistani.pk/2026/09/28/beoe-warns-citizens-against-fraudulent-overseas-job-offers/
