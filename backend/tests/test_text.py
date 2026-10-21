@@ -43,3 +43,20 @@ def test_deobfuscate_keeps_normal_text():
 def test_regional_languages(text, lang, reply):
     assert detect_source_language(text) == lang
     assert reply_language_for(lang) == reply
+
+
+def test_settings_clean_pasted_values_and_use_the_direct_neon_host():
+    from app.config import Settings
+
+    s = Settings(
+        _env_file=None,
+        database_url="postgresql://u:p@ep-fragrant-1-pooler.c-6.us-east-2.aws.neon.tech/neondb"
+                     "?sslmode=require&channel_binding=require\n",
+        groq_api_key="  gsk_test\r\n",
+    )
+    assert s.database_url == ("postgresql://u:p@ep-fragrant-1.c-6.us-east-2.aws.neon.tech/neondb"
+                              "?sslmode=require&channel_binding=require")
+    assert s.groq_api_key == "gsk_test"
+    other = Settings(_env_file=None, database_url="postgresql://u:p@db.example.com:5432/app")
+    assert other.database_url == "postgresql://u:p@db.example.com:5432/app"
+    assert Settings(_env_file=None, database_url=" ").database_url is None

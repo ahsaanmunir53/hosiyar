@@ -108,7 +108,7 @@ Environment variables (the **Add from .env** button lets you paste your `.env`):
 | `TRUSTED_PROXY_HOPS` | `3` (the default). Rate limits use Cloudflare's `CF-Connecting-IP` header, which Render's traffic carries; without it, the visitor is the third entry from the end of `X-Forwarded-For` (visitor, Cloudflare edge, Render hop). If everyone suddenly gets "Too many requests" at once, set it to `0` as a fallback. |
 | Optional | `SAFE_BROWSING_API_KEY`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_WEBHOOK_SECRET`, `TELEGRAM_ALERT_CHAT_ID`, `TURNSTILE_SECRET`, `INTEGRATION_KEY` |
 
-**Option B, Blueprint:** **New** → **Blueprint** → select the repo. It reads `render.yaml` and asks for the same secrets.
+**Option B, Blueprint (API and website together):** **New** → **Blueprint** → select the repo. It reads `render.yaml`, creates the API (`hoshiyar-api`, free web service) and the website (`hoshiyar-web`, free static site, which does not sleep), and asks once for every secret. Enter `https://hoshiyar-web.onrender.com` for `ALLOWED_ORIGINS` and `PUBLIC_APP_URL`, and `https://hoshiyar-api.onrender.com` for `VITE_API_URL`. If Render adds a suffix to a name, put the real URLs in afterwards and redeploy both. `TELEGRAM_WEBHOOK_SECRET` must be the same value as in your local `.env` and use only letters, digits, `_` and `-` (`python -c "import secrets; print(secrets.token_urlsafe(32))"`). Copy the generated `CRON_SECRET` into GitHub (section 10). Section 9 is then not needed.
 
 When the deploy finishes, the logs show `Hoshiyar ready: model=... storage=postgres`. Open `https://<your-service>.onrender.com/api/health` to confirm.
 
@@ -179,7 +179,8 @@ Restart Claude Desktop. It can then use `check_message`, `lookup`, `recent_campa
 | No admin account | `ADMIN_EMAIL`/`ADMIN_PASSWORD` were not set when the app first started with an empty users table, or the password was shorter than 10 characters. Set them and restart. |
 | Weekly job fails with 401 or 404 | `CRON_SECRET` differs between GitHub and Render (401), or is not set on Render (404). |
 | Family alerts say the bot is not set up | Set `TELEGRAM_BOT_TOKEN` and register the webhook (section 5). |
-| Postgres errors about prepared statements | You used Neon's pooled (`-pooler`) host. Use the direct one. |
+| Postgres errors about prepared statements | You used Neon's pooled (`-pooler`) host. Use the direct one (the app now also switches to it by itself and logs a warning). |
+| `invalid channel_binding value: "require` and `PoolTimeout` at start-up | The pasted `DATABASE_URL` ends with a newline. Edit it on Render and remove the line break (the app now strips it too). |
 | Screenshot or payment-screenshot check returns 503 | `GOOGLE_API_KEY` is not set. |
 | Windows: "Psycopg cannot use the 'ProactorEventLoop'" | Start with `python run.py` or `uvicorn app.main:app --reload`. Scripts in `eval/` already handle this. |
 | `429 RESOURCE_EXHAUSTED` from Gemini | Free-tier per-minute limit. Wait a minute. The app keeps working: a failed memory search is skipped. |

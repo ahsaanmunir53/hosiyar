@@ -294,6 +294,8 @@ export interface ReceiptResult {
   experimental: true;
   fields: Record<string, string | string[] | null>;
   findings: { id: string; severity: "high" | "medium" | "low"; text: I18n; source?: string }[];
+  // Never "real": a screenshot cannot prove a payment.
+  assessment?: "likely_fake" | "suspicious" | "no_signs";
   advice: I18n[];
   unavailable?: string;
 }

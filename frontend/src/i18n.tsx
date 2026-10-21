@@ -390,6 +390,16 @@ const S = {
   receipt_button: { en: "Check screenshot", ur: "اسکرین شاٹ چیک کریں", roman: "Screenshot check karein" },
   receipt_fields: { en: "What the screenshot says", ur: "اسکرین شاٹ میں کیا لکھا ہے", roman: "Screenshot mein kya likha hai" },
   receipt_findings: { en: "Things to look at", ur: "دیکھنے کی چیزیں", roman: "Dekhne ki cheezein" },
+  receipt_likely_fake: {
+    en: "Strong signs this screenshot is fake or edited. Do not hand anything over until the money shows in your own app.",
+    ur: "اس اسکرین شاٹ کے جعلی یا ایڈٹ شدہ ہونے کی واضح نشانیاں ہیں۔ جب تک رقم آپ کی اپنی ایپ میں نظر نہ آئے، کچھ حوالے نہ کریں۔",
+    roman: "Is screenshot ke jaali ya edit kiye hue hone ki wazeh nishaniyan hain. Jab tak raqam aap ki apni app mein nazar na aaye, kuch hawale na karein.",
+  },
+  receipt_suspicious: {
+    en: "Some things do not add up. Check your own app before you trust this screenshot.",
+    ur: "کچھ چیزیں میل نہیں کھاتیں۔ اس اسکرین شاٹ پر بھروسہ کرنے سے پہلے اپنی ایپ چیک کریں۔",
+    roman: "Kuch cheezein mel nahi khatein. Is screenshot par bharosa karne se pehle apni app check karein.",
+  },
   receipt_none: {
     en: "Nothing obviously wrong was found, but that proves nothing. Check your own app.",
     ur: "کوئی واضح خرابی نہیں ملی، لیکن اس سے کچھ ثابت نہیں ہوتا۔ اپنی ایپ چیک کریں۔",

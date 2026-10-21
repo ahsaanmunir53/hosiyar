@@ -126,6 +126,8 @@ function Receipt() {
       {result && (
         <div className="receipt" aria-live="polite">
           {result.unavailable && <p className="notice">{result.unavailable}</p>}
+          {result.assessment === "likely_fake" && <p className="notice notice--bad" role="alert">{t("receipt_likely_fake")}</p>}
+          {result.assessment === "suspicious" && <p className="notice">{t("receipt_suspicious")}</p>}
           {fields.length > 0 && (
             <>
               <h3>{t("receipt_fields")}</h3>

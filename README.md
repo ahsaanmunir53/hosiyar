@@ -150,7 +150,7 @@ python -m eval.redteam                         # red-team set
 python -m eval.gate                            # the CI quality gate
 python -m eval.run_eval --with-ai --limit 20   # adds the full AI pipeline on 20 test messages
 python -m eval.calibrate_memory                # pick a similarity threshold for your embedder
-node --test ../extension/test/*.test.js        # extension look-alike detector
+node --test ../extension/test/lookalike.test.js   # extension look-alike detector (works in PowerShell too)
 ```
 
 The evaluation never touches your `DATABASE_URL`; it uses a temporary SQLite file. The AI run spends free-tier quota (about 4-6 model calls per message), waits 20 seconds between messages by default, and reports any message where a model call failed.

@@ -1,10 +1,12 @@
+from datetime import UTC, datetime
+
 import pytest
 
 from app.files import FileUnreadable
 from app.files.email_check import read_email
 from app.files.pdf import read_pdf
 from app.files.qr import crc16_ccitt, describe_qr, parse_payment_qr
-from app.files.receipt import consistency_findings
+from app.files.receipt import assessment, consistency_findings
 from tests.helpers import GENUINE_EMAIL, PHISHING_EMAIL, make_pdf
 
 
@@ -62,9 +64,49 @@ def test_payment_qr_is_described():
     assert describe_qr("https://bit.ly/x")["content_type"] == "link"
 
 
+NOW = datetime(2026, 10, 21, 9, 0, tzinfo=UTC)  # 2 pm in Pakistan
+
+
 def test_receipt_consistency_checks():
     ids = [f["id"] for f in consistency_findings({"status_text": "Successful", "amount_text": "Rs. 25,000",
-                                                  "date_text": "11-Oct-2026", "transaction_id": "123456789"})]
+                                                  "date_text": "21-Oct-2026", "transaction_id": "123456789",
+                                                  "receiver_account_masked": "0305****284"}, NOW)]
     assert ids == []
-    ids = [f["id"] for f in consistency_findings({"status_text": "Pending", "amount_text": "5,0000", "date_text": "01-Jan-2099"})]
+    ids = [f["id"] for f in consistency_findings({"status_text": "Pending", "amount_text": "5,0000", "date_text": "01-Jan-2099"}, NOW)]
     assert ids == ["status", "no_reference", "amount_format", "future_date"]
+
+
+def test_fake_receipt_with_old_date_and_wrong_mask_length_is_flagged():
+    # Fields as read from a made-up JazzCash receipt: two years old, 13-character masked numbers.
+    fields = {"app_name": "JazzCash", "status_text": "Transaction Successful", "amount_text": "Rs. 2,350.00",
+              "date_text": "29 Oct 2024, 03:24 PM", "transaction_id": "069108762934",
+              "receiver_account_masked": "0305******284", "sender_account_masked": "0312******567"}
+    found = consistency_findings(fields, NOW)
+    assert {f["id"] for f in found} == {"old_date", "number_length"}
+    assert next(f for f in found if f["id"] == "old_date")["severity"] == "high"
+    assert assessment(found) == "likely_fake"
+
+
+def test_fake_receipt_with_placeholder_numbers_is_flagged():
+    fields = {"status_text": "Transaction Successful", "amount_text": "Rs. 2,750.00", "transaction_id": "031547892736",
+              "date_text": "October 28, 2024", "time_text": "04:17 PM", "status_bar_time": "3:24",
+              "receiver_account_masked": "03011234567", "sender_account_masked": "03098765432"}
+    ids = [f["id"] for f in consistency_findings(fields, NOW)]
+    assert ids.count("placeholder_number") == 2 and "old_date" in ids
+    assert "clock_before_payment" not in ids  # the screenshot may be from another day, so no clock check
+
+
+def test_status_bar_clock_earlier_than_a_payment_made_today():
+    base = {"status_text": "Successful", "amount_text": "Rs. 5,000", "transaction_id": "40123456789",
+            "date_text": "21 Oct 2026", "receiver_account_masked": "0300****123"}
+    early = consistency_findings({**base, "time_text": "04:17 PM", "status_bar_time": "3:24"}, NOW)
+    assert "clock_before_payment" in {f["id"] for f in early}
+    fine = consistency_findings({**base, "time_text": "11:05 AM", "status_bar_time": "3:24"}, NOW)  # 3:24 pm is later
+    assert "clock_before_payment" not in {f["id"] for f in fine}
+    assert assessment(fine) == "no_signs"
+
+
+def test_a_few_days_old_receipt_is_only_a_caution():
+    found = consistency_findings({"status_text": "Successful", "transaction_id": "1", "date_text": "16-Oct-2026"}, NOW)
+    assert [(f["id"], f["severity"]) for f in found] == [("old_date", "medium")]
+    assert assessment(found) == "suspicious"

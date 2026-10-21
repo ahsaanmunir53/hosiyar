@@ -1,13 +1,20 @@
 """Application settings, read from environment variables or a .env file."""
 
+import logging
+import re
 from functools import lru_cache
 from typing import Literal
 
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+log = logging.getLogger(__name__)
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
+    # Values pasted into a hosting dashboard often carry a trailing newline or space; strip them.
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore",
+                                      str_strip_whitespace=True)
 
     app_env: Literal["development", "production", "test"] = "development"
     # Comma-separated list of frontend origins allowed to call the API.
@@ -145,6 +152,22 @@ class Settings(BaseSettings):
     @property
     def uses_postgres(self) -> bool:
         return bool(self.database_url)
+
+    @field_validator("database_url")
+    @classmethod
+    def _clean_database_url(cls, value: str | None) -> str | None:
+        """Remove whitespace a paste can leave inside the URL, and use Neon's direct endpoint.
+
+        The app keeps its own connection pool and the LangGraph checkpointer needs a real session,
+        so Neon's "-pooler" host (PgBouncer in transaction mode) is swapped for the direct host.
+        """
+        if not value:
+            return None
+        url = re.sub(r"\s+", "", value)
+        direct = re.sub(r"(@[^/?#]*?)-pooler(\.[^/?#]*neon\.tech)", r"\1\2", url)
+        if direct != url:
+            log.warning("DATABASE_URL uses Neon's -pooler host; connecting to the direct host instead.")
+        return direct
 
 
 @lru_cache
