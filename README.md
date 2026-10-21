@@ -62,7 +62,12 @@ flowchart LR
 - **Read aloud** with the device's own voice, and a **complaint pack** for NCCIA or PTA built on the device, with the original message.
 - **Report a scam website**: registrar and abuse contact from RDAP, a ready-to-send email, and Google's phishing report form.
 - **Lookups**: is this phone number, website or bank account in reviewed reports or on the watchlist? The value is never stored.
-- **Payment screenshot check** (experimental): reads a "payment sent" screenshot and points out inconsistencies, with the one reliable advice: check your own app.
+- **Payment screenshot check** (experimental): reads a "payment sent" screenshot with Gemini, then decides with deterministic checks. It never says "real"; it says "likely fake", "some things do not add up" or "no signs found", always with the one reliable advice: check your own app.
+  - The receipt itself: status, date (too old, in the future, impossible, wrong weekday), impossible times, total = amount + fee, amount in words vs figures, phone numbers with the wrong length or made-up sequences (03011234567), IBAN check digits, misspelled wallet or bank names, phone clock earlier than the payment.
+  - What you expected (optional): an amount higher than expected (the "I sent too much, return the difference" trick) and money sent to someone else's number. These two inputs are compared and forgotten.
+  - The image file: AI-generator labels (C2PA, IPTC "trainedAlgorithmicMedia", Stable Diffusion settings), editing-app names (Photoshop, PicsArt, Canva...), AI-generator image sizes. Only metadata is read, no extra library.
+  - Memory: the same receipt (transaction ID and amount) checked by someone else, or already found fake, using only a keyed hash kept for 90 days; numbers on the receipt that reviewers confirmed as scam numbers.
+- **Fake "money received" SMS and the refund trick**: a credit alert from an ordinary 03xx number, and "sent to you by mistake, please return it", are decisive rules in the message checker.
 - **Family alerts**: a relative gets a Telegram alert (scam type only, never the message) when a check from your browser or chat comes back as a likely scam.
 - **Spot the scam** quiz, installable **PWA** with a share target (share a WhatsApp message straight to Hoshiyar), **browser extension**, **Telegram bot**.
 
@@ -114,7 +119,7 @@ These numbers are for **rules and pattern memory, no AI**. All sets were written
 | Integrations | MCP (`mcp` 2.x), STIX 2.1, Telegram Bot API, Cloudflare Turnstile (optional) |
 | Frontend | React 19, TypeScript, Vite, three.js via React Three Fiber, jsQR, PWA |
 | Extension | Chrome Manifest V3, no build step |
-| Tests | pytest (157 tests incl. scripted-LLM agent tests, model-failure handling and security regressions), node:test for the extension, GitHub Actions with a quality gate |
+| Tests | pytest (206 tests incl. scripted-LLM agent tests, fake-receipt checks, model-failure handling and security regressions), node:test for the extension, GitHub Actions with a quality gate |
 | Hosting | Render (API), Vercel (frontend), Neon (Postgres), GitHub Actions (schedules), all on free tiers |
 
 ## Run it locally
@@ -186,7 +191,7 @@ Step by step in [`docs/SETUP.md`](docs/SETUP.md): Neon for Postgres, Render for 
 
 - Personal identifiers (phone, CNIC, card, account and IBAN numbers, emails, one-time codes, also when written with spaces, and inside link query strings) are removed before text enters the pipeline, is sent to any model or is stored. The raw message never reaches the database or the conversation store; a mobile sender number is masked and fingerprinted. Email subjects and sender names are redacted too.
 - Phone numbers and accounts are stored only as keyed hashes, and only count as "reported" after review or reports from several Telegram accounts.
-- Shared messages are stored redacted, for reviewers, and appear on the public trends page only after a reviewer approves them. Lookups, payment screenshots, QR images and complaint packs are never stored.
+- Shared messages are stored redacted, for reviewers, and appear on the public trends page only after a reviewer approves them. Lookups, payment screenshots, QR images and complaint packs are never stored (for receipts, only a keyed hash of the transaction ID and amount, for 90 days).
 - Old data is deleted on a schedule (checks and their threads after 180 days, rejected reports after 30, AI cache after 7), and anyone can delete the data linked to their browser from the Privacy page.
 - Free-tier model APIs may use prompts to improve their products, which is another reason redaction happens first. Screenshots and voice notes cannot be redacted before they are read; the interface says so.
 - The browser extension checks look-alike sites locally; the pages you visit are never sent anywhere.

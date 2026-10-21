@@ -7,11 +7,10 @@ from pathlib import Path
 from fastapi import APIRouter, File, Form, HTTPException, Request, UploadFile
 from pydantic import BaseModel, Field
 
-from app.ai.media import MediaUnavailable
 from app.api.captcha import check_captcha
 from app.api.routes import IMAGE_TYPES, limit
 from app.api.service import user_hash
-from app.files.receipt import ADVICE, read_receipt
+from app.files.receipt import read_receipt
 from app.intel import alerts, family, retention
 from app.intel.lookup import lookup
 from app.intel.reports import campaign_list
@@ -51,8 +50,16 @@ async def takedown(body: TakedownBody, request: Request) -> dict:
 
 
 @router.post("/receipt")
-async def receipt_check(request: Request, file: UploadFile = File(...), captcha_token: str | None = Form(default=None)) -> dict:
-    """Experimental. Reads a 'payment sent' screenshot; gives findings, never a verdict. Not stored."""
+async def receipt_check(
+    request: Request,
+    file: UploadFile = File(...),
+    captcha_token: str | None = Form(default=None),
+    expected_amount: str | None = Form(default=None, max_length=40),
+    my_account: str | None = Form(default=None, max_length=40),
+    client_id: str | None = Form(default=None, max_length=64),
+) -> dict:
+    """Experimental. Reads a 'payment sent' screenshot and lists findings; it never says "real".
+    The image and the person's own number are not stored."""
     limit(request)
     await check_captcha(request, captcha_token)
     s = request.app.state.settings
@@ -63,9 +70,8 @@ async def receipt_check(request: Request, file: UploadFile = File(...), captcha_
     if len(data) > s.max_image_mb * 1024 * 1024:
         raise HTTPException(413, f"Screenshot is larger than {s.max_image_mb:g} MB.")
     try:
-        return await read_receipt(s, data, content_type)
-    except MediaUnavailable as exc:
-        return {"experimental": True, "fields": {}, "findings": [], "advice": ADVICE, "unavailable": str(exc)}
+        return await read_receipt(request.app.state.deps, data, content_type, expected_amount=expected_amount,
+                                  my_account=my_account, user=user_hash(s, client_id))
     except Exception as exc:
         raise HTTPException(502, "Could not read the screenshot. The advice below still applies.") from exc
 

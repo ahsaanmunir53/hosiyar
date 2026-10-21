@@ -85,6 +85,8 @@ function Receipt() {
   const [error, setError] = useState<string | null>(null);
   const [captcha, setCaptcha] = useState<string | null>(null);
   const [reset, setReset] = useState(0);
+  const [expectedAmount, setExpectedAmount] = useState("");
+  const [myAccount, setMyAccount] = useState("");
 
   async function submit(e: FormEvent) {
     e.preventDefault();
@@ -94,7 +96,7 @@ function Receipt() {
     setError(null);
     setResult(null);
     try {
-      setResult(await checkReceipt(file, file.name, captcha));
+      setResult(await checkReceipt(file, file.name, captcha, { expectedAmount, myAccount }));
     } catch (err) {
       setError(err instanceof ApiError && err.status !== 0 ? err.message : t("err_network"));
     } finally {
@@ -117,6 +119,19 @@ function Receipt() {
           <input type="file" accept="image/png,image/jpeg,image/webp" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
           <span>{file ? `${t("file_chosen")}: ${file.name}` : t("receipt_pick")}</span>
         </label>
+        <div className="receipt-extra">
+          <label className="field">
+            <span className="field__label">{t("receipt_expected")}</span>
+            <input type="text" inputMode="decimal" value={expectedAmount} onChange={(e) => setExpectedAmount(e.target.value)}
+              placeholder="2500" dir="ltr" maxLength={40} />
+          </label>
+          <label className="field">
+            <span className="field__label">{t("receipt_mine")}</span>
+            <input type="text" inputMode="numeric" value={myAccount} onChange={(e) => setMyAccount(e.target.value)}
+              placeholder="0300 1234567 / 4567" dir="ltr" maxLength={40} autoComplete="off" />
+          </label>
+          <p className="field__hint">{t("receipt_private")}</p>
+        </div>
         <button type="submit" className="btn btn--primary" disabled={busy}>
           {busy ? t("checking") : t("receipt_button")}
         </button>

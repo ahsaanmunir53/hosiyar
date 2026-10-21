@@ -26,6 +26,15 @@ def run(text: str, sender: str | None = None, links: list | None = None):
         ("Bhai maine university ki fees jama karwa di hai, receipt bhej raha hoon", None, "no_red_flags"),
         ("Yaar 500 bhej de easypaisa pe, kal wapas kar dunga", None, "no_red_flags"),
         ("BISP: apni qist qareebi campsite se hasil karein. Kisi ko koi fee ada na karein.", "8171", "no_red_flags"),
+        # "Money received" alerts: real from a short code or name, fake from a 03xx number
+        ("You have received Rs. 5,000.00 from ALI KHAN in your JazzCash account. TID: 40123456789", "03001234567", "likely_scam"),
+        ("You have received Rs. 5,000.00 from ALI KHAN in your JazzCash account. TID: 40123456789", "8558", "no_red_flags"),
+        ("Rs 25,000 has been credited to your HBL account. Ref 99812. Available balance Rs 80,120", "HBL", "no_red_flags"),
+        ("Aap ke Easypaisa account mein Rs 3500 jama ho gaye hain. Trx ID 2231", "03451234567", "likely_scam"),
+        # "Sent by mistake, please return it"
+        ("Assalam o alaikum, ghalti se aap ke number par 2000 rupay bhej diye hain, please wapas kar dein", "03021112223", "likely_scam"),
+        ("Bhai maine aap ke account mein 5000 transfer kar diye hain, check kar lo", "03001234567", "no_red_flags"),
+        ("Payment received, thanks bhai! Parcel kal bhej dunga", "03001234567", "no_red_flags"),
     ],
 )
 def test_verdicts(text, sender, verdict):

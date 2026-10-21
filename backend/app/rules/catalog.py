@@ -398,6 +398,30 @@ RULES: dict[str, RuleInfo] = {
                "Raqam wasool karne ke liye kabhi code scan karne ya PIN dalne ki zaroorat nahi hoti. Payment QR scan karne se aap ke account se paise jate hain."),
         ),
         RuleInfo(
+            "fake_credit_alert", 45,
+            _t("\"Money received\" message from an ordinary mobile number",
+               "عام موبائل نمبر سے \"رقم موصول\" کا پیغام",
+               "Aam mobile number se \"raqam mosool\" ka message"),
+            _t("JazzCash, Easypaisa and banks send these alerts from short codes or their own name, never from a 03xx number. "
+               "Open your app and check your balance before doing anything.",
+               "جاز کیش، ایزی پیسہ اور بینک یہ پیغام شارٹ کوڈ یا اپنے نام سے بھیجتے ہیں، کبھی 03 والے نمبر سے نہیں۔ "
+               "کچھ کرنے سے پہلے اپنی ایپ کھول کر بیلنس دیکھیں۔",
+               "JazzCash, Easypaisa aur bank yeh message short code ya apne naam se bhejte hain, kabhi 03 wale number se nahi. "
+               "Kuch karne se pehle apni app khol kar balance dekhein."),
+        ),
+        RuleInfo(
+            "refund_trick", 45,
+            _t("Says money was sent to you \"by mistake\" and asks for it back",
+               "کہا گیا ہے کہ پیسے \"غلطی سے\" آپ کو بھیجے گئے، واپس کریں",
+               "Kaha gaya hai ke paise \"ghalti se\" aap ko bheje gaye, wapas karein"),
+            _t("A common trick: a fake \"money received\" message, then a call asking you to return it. Check your balance in the "
+               "app. If money really arrived by mistake, the wallet's helpline reverses it; never send it back yourself.",
+               "عام چال: جعلی \"رقم موصول\" کا پیغام، پھر واپس کرنے کی کال۔ ایپ میں بیلنس دیکھیں۔ اگر واقعی غلطی سے "
+               "رقم آئی ہو تو والیٹ کی ہیلپ لائن اسے واپس کرتی ہے؛ خود واپس نہ بھیجیں۔",
+               "Aam chaal: jaali \"raqam mosool\" ka message, phir wapas karne ki call. App mein balance dekhein. Agar waqai "
+               "ghalti se raqam aayi ho to wallet ki helpline usay wapas karti hai; khud wapas na bhejein."),
+        ),
+        RuleInfo(
             "passport_request", 25,
             _t("Asks you to send or hand over your passport",
                "پاسپورٹ بھیجنے یا جمع کروانے کو کہا گیا ہے",
@@ -513,7 +537,7 @@ _REQUEST_RULES = {
     "remote_app", "family_emergency", "link_lookalike", "link_safe_browsing", "link_new_domain",
     "link_not_official", "job_with_payment", "loan_with_fee", "manipulation_attempt", "watchlist_match",
     "receive_by_scan", "passport_request", "risky_attachment", "pdf_active_content", "email_brand_mismatch",
-    "email_freemail_brand",
+    "email_freemail_brand", "fake_credit_alert", "refund_trick",
 }
 
 # Where a signal can come from. Anything other than "ai" is deterministic.
@@ -661,6 +685,12 @@ def evaluate(ctx: EvalContext) -> list[RuleHit]:
     add(_sig_hit(ctx, "manipulation_attempt", "manipulation_attempt", hard=True))
     add(_sig_hit(ctx, "safety_claim", "safety_claim"))
     add(_sig_hit(ctx, "receive_by_scan", "receive_by_scan", hard=bool(sig.brands) or sig.has("prize")))
+    if sig.has("credit_alert") and ctx.sender_kind == "mobile" and sig.pattern_backed("credit_alert"):
+        hits.append(RuleHit("fake_credit_alert", RULES["fake_credit_alert"].weight, hard=True,
+                            evidence=list(sig.get("credit_alert").evidence) + [f"sender: {ctx.sender}"],
+                            sources=["pattern", "sender"]))
+    add(_sig_hit(ctx, "refund_trick", "mistaken_payment",
+                 hard=sig.has("credit_alert") or sig.has("money_transfer") or ctx.sender_kind == "mobile"))
     add(_sig_hit(ctx, "passport_request", "passport_request"))
     mixed = sig.get("mixed_script")
     if mixed:

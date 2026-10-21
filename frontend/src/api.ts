@@ -296,14 +296,23 @@ export interface ReceiptResult {
   findings: { id: string; severity: "high" | "medium" | "low"; text: I18n; source?: string }[];
   // Never "real": a screenshot cannot prove a payment.
   assessment?: "likely_fake" | "suspicious" | "no_signs";
+  image?: { width: number | null; height: number | null };
   advice: I18n[];
   unavailable?: string;
 }
 
-export function checkReceipt(file: Blob, filename: string, captcha?: string | null) {
+export function checkReceipt(
+  file: Blob,
+  filename: string,
+  captcha?: string | null,
+  extra?: { expectedAmount?: string; myAccount?: string },
+) {
   const form = new FormData();
   form.append("file", file, filename);
   if (captcha) form.append("captcha_token", captcha);
+  if (extra?.expectedAmount?.trim()) form.append("expected_amount", extra.expectedAmount.trim().slice(0, 40));
+  if (extra?.myAccount?.trim()) form.append("my_account", extra.myAccount.trim().slice(0, 40));
+  form.append("client_id", clientId());
   return request<ReceiptResult>("/api/receipt", { method: "POST", body: form });
 }
 

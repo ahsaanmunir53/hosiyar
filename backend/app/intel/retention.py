@@ -4,7 +4,7 @@ from datetime import UTC, datetime, timedelta
 
 from sqlalchemy import delete, select, update
 
-from app.db.models import AICache, AlertLog, Analysis, FamilyLink, Report
+from app.db.models import AICache, AlertLog, Analysis, FamilyLink, ReceiptSeen, Report
 from app.intel import family
 from app.intel.reports import delete_reports
 from app.memory import store as memory
@@ -52,6 +52,9 @@ async def purge(deps) -> dict:
         counts["family_codes"] = res.rowcount or 0
         res = await session.execute(delete(AlertLog).where(AlertLog.created_at < now - timedelta(days=s.retention_alerts_days)))
         counts["alerts"] = res.rowcount or 0
+        res = await session.execute(delete(ReceiptSeen).where(
+            ReceiptSeen.last_seen < now - timedelta(days=s.retention_receipts_days)))
+        counts["receipts"] = res.rowcount or 0
         await session.commit()
     return counts
 

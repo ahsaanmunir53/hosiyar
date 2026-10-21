@@ -390,6 +390,17 @@ const S = {
   receipt_button: { en: "Check screenshot", ur: "اسکرین شاٹ چیک کریں", roman: "Screenshot check karein" },
   receipt_fields: { en: "What the screenshot says", ur: "اسکرین شاٹ میں کیا لکھا ہے", roman: "Screenshot mein kya likha hai" },
   receipt_findings: { en: "Things to look at", ur: "دیکھنے کی چیزیں", roman: "Dekhne ki cheezein" },
+  receipt_expected: { en: "Amount you are expecting (optional)", ur: "آپ کو کتنی رقم ملنی ہے (اختیاری)", roman: "Aap ko kitni raqam milni hai (ikhtiyari)" },
+  receipt_mine: {
+    en: "Your own number or account (optional, last 4 digits are enough)",
+    ur: "آپ کا اپنا نمبر یا اکاؤنٹ (اختیاری، آخری 4 ہندسے کافی ہیں)",
+    roman: "Aap ka apna number ya account (ikhtiyari, aakhri 4 digits kaafi hain)",
+  },
+  receipt_private: {
+    en: "These two help catch \"I sent you too much\" tricks and payments sent to someone else. They are compared and forgotten, never stored.",
+    ur: "یہ دونوں \"زیادہ بھیج دیے\" والی چال اور کسی اور کو بھیجی گئی ادائیگی پکڑنے میں مدد دیتے ہیں۔ صرف موازنہ ہوتا ہے، محفوظ نہیں کیے جاتے۔",
+    roman: "Yeh dono \"zyada bhej diye\" wali chaal aur kisi aur ko bheji gayi payment pakarne mein madad dete hain. Sirf muqabla hota hai, save nahi kiye jate.",
+  },
   receipt_likely_fake: {
     en: "Strong signs this screenshot is fake or edited. Do not hand anything over until the money shows in your own app.",
     ur: "اس اسکرین شاٹ کے جعلی یا ایڈٹ شدہ ہونے کی واضح نشانیاں ہیں۔ جب تک رقم آپ کی اپنی ایپ میں نظر نہ آئے، کچھ حوالے نہ کریں۔",

@@ -99,6 +99,7 @@ class Settings(BaseSettings):
     retention_rejected_days: int = 30
     retention_pending_days: int = 90
     retention_alerts_days: int = 365
+    retention_receipts_days: int = 90
 
     # --- Privacy and limits ----------------------------------------------
     # Secret used to fingerprint phone numbers (HMAC) so raw numbers are never stored.

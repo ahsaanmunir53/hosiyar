@@ -10,6 +10,7 @@
 * rule_suggestions   regex ideas from the rule-suggestion agent, never applied automatically
 * family_links   Telegram family alerts
 * alert_log      weekly warnings and family alerts that were sent
+* receipts_seen  keyed hashes of payment receipts that were checked, to spot one receipt sent to many people
 * users          analysts and admins for the review panel
 """
 
@@ -188,3 +189,17 @@ class AlertLog(Base):
     kind: Mapped[str] = mapped_column(String(16))  # weekly | family
     summary: Mapped[dict] = mapped_column(JSON, default=dict)
     delivered: Mapped[bool] = mapped_column(Boolean, default=False)
+
+
+class ReceiptSeen(Base):
+    """A payment receipt someone checked: only a keyed hash of its transaction ID and amount."""
+
+    __tablename__ = "receipts_seen"
+
+    fingerprint: Mapped[str] = mapped_column(String(32), primary_key=True)
+    first_seen: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+    last_seen: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, index=True)
+    first_user: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    checks: Mapped[int] = mapped_column(Integer, default=1)
+    other_users: Mapped[int] = mapped_column(Integer, default=0)
+    flagged: Mapped[bool] = mapped_column(Boolean, default=False)

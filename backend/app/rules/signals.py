@@ -277,6 +277,32 @@ RECEIVE_BY_SCAN = _c(
     r"\b(raqam|paise|paisay|money|amount|refund)\s+(?:wasool|hasil|receive|lene)\w*.{0,40}\b(scan|qr)\b|"
     r"(رقم|پیسے).{0,30}(وصول|حاصل).{0,40}(اسکین|کیو آر)"
 )
+# A "money received" notification: "You have received Rs 5,000", "Rs 5,000 credited to your account",
+# "aap ke account mein 5000 jama ho gaye". Real ones come from short codes or the wallet's name.
+CREDIT_ALERT = _c(
+    r"\b(?:you have|you've|you)\s+received\b.{0,30}(?:rs\.?|pkr|rupees|\d[\d,]{2,})|"
+    r"\b(?:rs\.?|pkr)\s?\d[\d,]*(?:\.\d+)?\s(?:has been |have been |is |was )?(?:received|credited|deposited)\b|"
+    r"\b(?:has been|have been|is|was) credited (?:to|in|into) your\b|"
+    r"\b(?:aap|ap|apko|aapko)\b.{0,25}\d[\d,]{2,}.{0,25}\b(?:mosool|wusool|wasool|mosul|wusul)\b|"
+    r"\b(?:account|wallet|jazz ?cash|easy ?paisa)\s(?:mein|me|main|men)\s(?:rs\.?\s?)?\d[\d,]{2,}.{0,25}"
+    r"\b(?:jama ho|receive ho|credit ho|aa gaye|aagaye|aa gae)|"
+    r"(?:روپے|رقم).{0,30}(?:موصول|وصول|جمع) ہو"
+)
+ALERT_STYLE = _c(
+    r"\b(tid|trx|txn|transaction id|trans id|ref(?:erence)?(?: no| id| #)?|balance|bal|jazz ?cash|easy ?paisa|raast|"
+    r"account|a/c|wallet|iban)\b|اکاؤنٹ|بیلنس|جاز کیش|ایزی پیسہ"
+)
+FIRST_PERSON_SENT = _c(
+    r"\b(maine|main ne|mene|meine|mein ne|i have sent|i sent|i've sent|i transferred|i have transferred|hum ne|humne)\b|میں نے"
+)
+# "I sent money to your number by mistake, please return it" (usually after a fake credit alert).
+MISTAKEN_PAYMENT = _c(
+    r"(galti se|ghalti se|ghalati se|galati se|by mistake|mistakenly|accidentally|wrongly|wrong number|ghalat number|"
+    r"galat number)\b.{0,90}\b(wapas|wapis|vapas|return|refund|lauta\w*|send (?:it )?back|transfer back)\b|"
+    r"\b(wapas|wapis|vapas|return|refund|lauta\w*|send (?:it )?back)\b.{0,90}(galti se|ghalti se|by mistake|mistakenly|"
+    r"accidentally|wrongly)|"
+    r"غلطی سے.{0,90}(واپس|لوٹا)"
+)
 PLACEHOLDER_PHONE = re.compile(r"\[phone_\d+\]")
 
 
@@ -368,6 +394,10 @@ def detect_signals(text: str) -> SignalSet:
         hit = _window(t, pattern, 10) if name != "overseas" else _first(pattern, t)
         if hit:
             out.add(name, hit)
+    if CREDIT_ALERT.search(t) and ALERT_STYLE.search(t) and not FIRST_PERSON_SENT.search(t):
+        out.add("credit_alert", _window(t, CREDIT_ALERT, 10) or "")
+    if MISTAKEN_PAYMENT.search(t) and MONEY.search(t):
+        out.add("mistaken_payment", _window(t, MISTAKEN_PAYMENT, 10) or "")
     mixed = mixed_script_words(text)
     if mixed:
         out.add("mixed_script", ", ".join(mixed))

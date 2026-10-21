@@ -54,6 +54,8 @@ def categorize(ctx: EvalContext, hits: list[RuleHit], verdict: str) -> str:
     kinds = sig.brand_kinds()
     if "code_hijack" in ids or ("secret_request" in ids and ("whatsapp" in {b.key for b in sig.brands})):
         return "account_takeover"
+    if {"fake_credit_alert", "refund_trick"} & ids:
+        return "bank_wallet"
     if sig.has("claims_government") or "government" in kinds or "bisp_wrong_sender" in ids:
         # Money promised to you (BISP, relief, refund, prize) versus money demanded from you (fines, challans).
         benefit = (
