@@ -1926,6 +1926,34 @@ html[dir="rtl"] .bubble {
   }
 }
 
+/* Bottom bar while the free server wakes up */
+.wakebar {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 16px;
+  z-index: 80;
+  width: min(720px, calc(100vw - 32px));
+  margin-inline: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  background: var(--ink-raised);
+  color: var(--paper);
+  font-size: var(--step--1);
+  line-height: 1.45;
+  box-shadow: inset 0 0 0 1px rgba(233, 200, 106, 0.35), 0 12px 32px -12px rgba(0, 0, 0, 0.6);
+}
+.wakebar--ready { box-shadow: inset 0 0 0 1px rgba(92, 207, 165, 0.45), 0 12px 32px -12px rgba(0, 0, 0, 0.6); }
+.wakebar--failed { box-shadow: inset 0 0 0 1px rgba(242, 102, 140, 0.45), 0 12px 32px -12px rgba(0, 0, 0, 0.6); }
+.wakebar__text { flex: 1; }
+.wakebar__secs { font-variant-numeric: tabular-nums; color: var(--foil-gold); font-weight: 600; min-width: 3ch; text-align: end; }
+.wakebar__dot { width: 9px; height: 9px; border-radius: 50%; background: var(--foil-gold); flex-shrink: 0; animation: wakepulse 1s ease-in-out infinite alternate; }
+@keyframes wakepulse { from { opacity: 0.3; } to { opacity: 1; } }
+.wakebar__retry { background: none; border: 1px solid var(--ink-line-strong); color: var(--paper); border-radius: var(--radius-sm); padding: 4px 10px; cursor: pointer; font: inherit; }
+:root[data-lang="ur"] .wakebar__text { font-family: var(--font-urdu); line-height: 2; }
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

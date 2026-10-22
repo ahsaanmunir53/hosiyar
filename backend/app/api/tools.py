@@ -1,10 +1,11 @@
 """Public helper endpoints: lookups, takedown help, payment screenshots, family alerts,
 campaigns, the weekly warning, quality numbers and privacy controls."""
 
+import hmac
 import json
 from pathlib import Path
 
-from fastapi import APIRouter, File, Form, HTTPException, Request, UploadFile
+from fastapi import APIRouter, File, Form, Header, HTTPException, Request, UploadFile
 from pydantic import BaseModel, Field
 
 from app.api.captcha import check_captcha
@@ -14,6 +15,7 @@ from app.files.receipt import read_receipt
 from app.intel import alerts, family, retention
 from app.intel.lookup import lookup
 from app.intel.reports import campaign_list
+from app.intel.stix import build_bundle
 from app.intel.takedown import takedown_info
 from app.schemas import LookupRequest
 
@@ -160,3 +162,19 @@ async def privacy(request: Request) -> dict:
             "postgres": s.uses_postgres,
         },
     }
+
+
+@router.get("/stix")
+async def stix_feed(request: Request, x_integration_key: str | None = Header(default=None)) -> dict:
+    """STIX 2.1 feed of confirmed scam websites for partner tools (for example CaseLink).
+
+    Needs the INTEGRATION_KEY in the X-Integration-Key header. The feed holds the same reviewed or
+    rule-confirmed websites as the analysts' export; phone and account fingerprints never leave.
+    """
+    s = request.app.state.settings
+    if not s.integration_key:
+        raise HTTPException(404, "The partner feed is not set up (INTEGRATION_KEY is empty).")
+    if not x_integration_key or not x_integration_key.isascii() or not hmac.compare_digest(x_integration_key, s.integration_key):
+        raise HTTPException(401, "Wrong or missing X-Integration-Key.")
+    limit(request)
+    return await build_bundle(request.app.state.deps.sessionmaker)

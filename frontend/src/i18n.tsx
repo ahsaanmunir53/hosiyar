@@ -40,6 +40,18 @@ const S = {
     ur: "سرور سو رہا تھا اور اب چل رہا ہے۔ پہلی بار اس میں ایک منٹ تک لگ سکتا ہے۔",
     roman: "Server so raha tha aur ab start ho raha hai. Pehli dafa is mein ek minute tak lag sakta hai.",
   },
+  wake_bar: {
+    en: "Waking up the free server. Render's free plan puts it to sleep after 15 quiet minutes; it is back in 30 to 60 seconds.",
+    ur: "مفت سرور جاگ رہا ہے۔ رینڈر کا مفت پلان 15 منٹ خاموشی کے بعد اسے سلا دیتا ہے، 30 سے 60 سیکنڈ میں یہ واپس آ جاتا ہے۔",
+    roman: "Free server jag raha hai. Render ka free plan 15 minute khamoshi ke baad isay sula deta hai, 30 se 60 second mein wapas aa jata hai.",
+  },
+  wake_ready: { en: "The server is awake.", ur: "سرور جاگ گیا ہے۔", roman: "Server jag gaya hai." },
+  wake_failed: {
+    en: "The server is not answering. Check your connection, then try again.",
+    ur: "سرور جواب نہیں دے رہا۔ اپنا انٹرنیٹ دیکھیں، پھر دوبارہ کوشش کریں۔",
+    roman: "Server jawab nahi de raha. Apna internet check karein, phir dobara koshish karein.",
+  },
+  wake_retry: { en: "Try again", ur: "دوبارہ کوشش کریں", roman: "Dobara koshish karein" },
   examples: { en: "Try an example", ur: "مثال آزمائیں", roman: "Misaal try karein" },
   image_drop: {
     en: "Choose a screenshot (PNG, JPG or WebP, up to 5 MB)",

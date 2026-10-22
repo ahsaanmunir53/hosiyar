@@ -170,9 +170,51 @@ export function clientId(): string {
   }
 }
 
+// --------------------------------------------------------------------------- waking the free server
+// Render's free plan stops the API after 15 quiet minutes; the next request starts it again, which
+// takes 30-60 seconds. A slow request alone proves nothing (an AI check can take 10 seconds), so
+// when one is slow we ask /api/health: if that does not answer within 2 seconds either, the server
+// is asleep and the bottom bar shows until health answers.
+
+const SLOW_MS = 3500;
+type WakeListener = (waking: boolean) => void;
+const wakeListeners = new Set<WakeListener>();
+let probing = false;
+
+export function onWaking(fn: WakeListener): () => void {
+  wakeListeners.add(fn);
+  return () => void wakeListeners.delete(fn);
+}
+
+function emitWaking(waking: boolean) {
+  wakeListeners.forEach((fn) => fn(waking));
+}
+
+/** Ask the health endpoint; show the bar if it is slow too, hide it when it answers. Resolves true if it answered. */
+function probeHealth(showAfterMs: number): Promise<boolean> {
+  if (probing) return Promise.resolve(true);
+  probing = true;
+  let shown = false;
+  const show = setTimeout(() => {
+    shown = true;
+    emitWaking(true);
+  }, showAfterMs);
+  const controller = new AbortController();
+  const giveUp = setTimeout(() => controller.abort(), 150_000);
+  return fetch(`${API_URL}/api/health`, { cache: "no-store", signal: controller.signal })
+    .then((r) => r.ok, () => false)
+    .finally(() => {
+      clearTimeout(show);
+      clearTimeout(giveUp);
+      probing = false;
+      if (shown) emitWaking(false);
+    });
+}
+
 async function request<T>(path: string, init?: RequestInit, timeoutMs = 90_000): Promise<T> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
+  const slowTimer = setTimeout(() => void probeHealth(2000), SLOW_MS);
   let res: Response;
   try {
     res = await fetch(`${API_URL}${path}`, { ...init, signal: controller.signal });
@@ -180,6 +222,7 @@ async function request<T>(path: string, init?: RequestInit, timeoutMs = 90_000):
     throw new ApiError("network", 0);
   } finally {
     clearTimeout(timer);
+    clearTimeout(slowTimer);
   }
   if (!res.ok) {
     let detail = res.statusText;
@@ -424,3 +467,8 @@ export const getHealth = () =>
     telegram: boolean;
     captcha: boolean;
   }>("/api/health", undefined, 90_000);
+
+/** Called once when the site opens, so the API starts waking before the visitor presses anything. */
+export function warmUp(): Promise<boolean> {
+  return probeHealth(3000);
+}

@@ -168,6 +168,12 @@ The MCP server runs on your computer and calls your Hoshiyar API. In Claude Desk
 
 Restart Claude Desktop. It can then use `check_message`, `lookup`, `recent_campaigns` and `reporting_channels`. If your server uses a captcha, add `"HOSHIYAR_KEY": "<INTEGRATION_KEY>"` to `env`.
 
+## 14. Partner feed for CaseLink (optional)
+
+`GET /api/stix` returns the confirmed scam websites as a STIX 2.1 bundle, the same set as the analysts' export: only sites a reviewer approved or a deterministic link check confirmed, never messages, phone numbers or account fingerprints. It needs the `INTEGRATION_KEY` in an `X-Integration-Key` header, and answers 404 while `INTEGRATION_KEY` is empty.
+
+CaseLink, the analyst app, pulls this feed: set its `HOSHIYAR_API_URL` to this API's address and its `HOSHIYAR_INTEGRATION_KEY` to the same value as `INTEGRATION_KEY` here.
+
 ## Troubleshooting
 
 | Symptom | Fix |

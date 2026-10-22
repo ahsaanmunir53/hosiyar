@@ -249,3 +249,18 @@ def test_email_subject_is_redacted_in_the_result(client):
     body = client.post("/api/analyze/email", json={"raw": raw}).json()
     assert "1234567" not in body["file_info"]["subject"] and "my.name" not in body["file_info"]["subject"]
     assert all("?" not in link for link in body["file_info"]["links"])
+
+
+def test_partner_stix_feed_needs_the_integration_key(settings, tmp_path):
+    from fastapi.testclient import TestClient
+
+    from app.main import create_app
+
+    with TestClient(create_app(settings)) as c:
+        assert c.get("/api/stix").status_code == 404  # not set up
+    keyed = settings.model_copy(update={"integration_key": "partner-key-for-tests", "sqlite_path": str(tmp_path / "k.db")})
+    with TestClient(create_app(keyed)) as c:
+        assert c.get("/api/stix").status_code == 401
+        assert c.get("/api/stix", headers={"X-Integration-Key": "wrong"}).status_code == 401
+        bundle = c.get("/api/stix", headers={"X-Integration-Key": "partner-key-for-tests"}).json()
+        assert bundle["type"] == "bundle" and bundle["objects"][0]["type"] == "identity"

@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react";
 import { Link, Route, Routes } from "react-router-dom";
 import Header from "./components/Header";
+import WakeBar from "./components/WakeBar";
 import { useLang } from "./i18n";
 import CheckPage from "./pages/CheckPage";
 import HowPage from "./pages/HowPage";
@@ -47,6 +48,7 @@ export default function App() {
           <Link to="/admin">{t("foot_admin")}</Link>
         </nav>
       </footer>
+      <WakeBar />
     </div>
   );
 }
